@@ -1,7 +1,6 @@
 
 set nocp
 syntax on
-filetype on
 set bs=2
 set nu
 set tabstop=4
@@ -11,27 +10,21 @@ set autoindent
 set cindent
 
 set t_Co=256
-syntax enable
 set background=dark
 colorscheme molokai
 call plug#begin('~/.vim/plugs')
-Plug 'itchyny/lightline.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'ryanoasis/vim-devicons'
 Plug 'mhinz/vim-startify'
+Plug 'ryanoasis/vim-devicons'
 Plug 'Valloric/YouCompleteMe'
 Plug 'scrooloose/nerdtree'
 Plug 'vim-scripts/DoxygenToolkit.vim'
 call plug#end()
 
+filetype on
 let g:airline_symbols = {}
 let g:airline_theme = "badwolf"
-" unicode symbols
-let g:airline_left_sep = '»'
-let g:airline_left_sep = '▶'
-let g:airline_right_sep = '«'
-let g:airline_right_sep = '◀'
 " powerline symbols
 let g:airline_left_sep = ''
 let g:airline_left_alt_sep = ''
@@ -48,22 +41,21 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_sep = ''
 let g:airline#extensions#tabline#right_sep = ''
 
-function! ChangyinN()
-	let keys = ['C','h','a','n','g','y','i','n', 'N', '|' ,'mode']
-	for k in keys
-		call airline#parts#define_text(k, k)
-	endfor
-	call airline#parts#define_accent('C', 'red')
-	call airline#parts#define_accent('h', 'green')
-	call airline#parts#define_accent('a', 'blue')
-	call airline#parts#define_accent('n', 'green')
-	call airline#parts#define_accent('g', 'orange')
-	call airline#parts#define_accent('y', 'purple')
-	call airline#parts#define_accent('N', 'red')
-	let g:airline_section_a = airline#section#create(keys)
-endfunction
-autocmd VimEnter * call ChangyinN()
 
+"允许加载 不再提示
+let g:ycm_confirm_extra_conf = 0 
+"关闭预览
+set completeopt=menu
+let g:ycm_error_symbol = '✗'
+let g:ycm_warning_symbol = '✹'
+let g:ycm_seed_identifiers_with_syntax = 1 
+let g:ycm_complete_in_comments = 1 
+let g:ycm_complete_in_strings = 1 
+let g:ycm_collect_identifiers_from_tags_files = 1
+let g:ycm_semantic_triggers =  { 
+			\	'c' : ['.', '->', 're![_A-Za-z0-9]'], 
+			\	'cpp' : ['.', '->','::', 're![_A-Za-z0-9]'] 
+			\	}
 func! Run()
 	exec "w"
 	if &filetype == 'c'
