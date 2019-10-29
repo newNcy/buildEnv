@@ -27,6 +27,7 @@ function install_vim()
 	sudo yum install gcc gcc-c++
 	sudo yum install pythton3
 	sudo yum install python3-devel.x86_64
+	sudo yum install python-devel.x86_64
 	sudo yum install -y ruby ruby-devel lua lua-devel luajit \
 		luajit-devel ctags git \
 		perl perl-devel perl-ExtUtils-ParseXS \
@@ -60,6 +61,7 @@ function install_vim()
 	git submodule update --init --recursive
 
 	#手动下载防止卡住
+	mkdir -p ~/.vim/plugs/YouCompleteMe/third_party/ycmd/third_party/clangd/cache/
 	cp ~/buildEnv/clangd-9.0.0-x86_64-unknown-linux-gnu.tar.bz2	~/.vim/plugs/YouCompleteMe/third_party/ycmd/third_party/clangd/cache/
 	sudo yum install cmake
 	#这一步可能会卡住,下载clangd的时候
