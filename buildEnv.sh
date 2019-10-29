@@ -1,14 +1,19 @@
 #!/bin/bash
 
 cd 
-echo "install env for $USER[Y/n]?"
+echo "install env..."
 
+
+function install()
+{
+	sudo yum -y install $$
+}
 #git
-sudo yum install git
 
 function install_zsh()
 {
-	sudo yum install zsh
+	cd 
+	install zsh
 	chsh $USER -s /bin/zsh
 	git clone https://github.com/robbyrussell/oh-my-zsh
 	cd oh-my-zsh
@@ -22,13 +27,16 @@ function install_zsh()
 #vim
 function install_vim()
 {
+	cd 
 	git clone https://github.com/vim/vim.git
 	cd ./vim
-	sudo yum install gcc gcc-c++
-	sudo yum install pythton3
-	sudo yum install python3-devel.x86_64
-	sudo yum install python-devel.x86_64
-	sudo yum install -y ruby ruby-devel lua lua-devel luajit \
+	#gcc
+	install gcc gcc-c++
+	#python
+	install pythton3
+	install python3-devel.x86_64
+	install python-devel.x86_64
+	install ruby ruby-devel lua lua-devel luajit \
 		luajit-devel ctags git \
 		perl perl-devel perl-ExtUtils-ParseXS \
 		perl-ExtUtils-XSpp perl-ExtUtils-CBuilder \
@@ -63,7 +71,7 @@ function install_vim()
 	#手动下载防止卡住
 	mkdir -p ~/.vim/plugs/YouCompleteMe/third_party/ycmd/third_party/clangd/cache/
 	cp ~/buildEnv/clangd-9.0.0-x86_64-unknown-linux-gnu.tar.bz2	~/.vim/plugs/YouCompleteMe/third_party/ycmd/third_party/clangd/cache/
-	sudo yum install cmake
+	install cmake
 	#这一步可能会卡住,下载clangd的时候
 	./install.py --clangd-completer
 

@@ -8,6 +8,7 @@ set softtabstop=4
 set shiftwidth=4
 set autoindent
 set cindent
+set incsearch
 
 set t_Co=256
 set background=dark
@@ -26,6 +27,7 @@ filetype on
 let g:airline_symbols = {}
 let g:airline_theme = "badwolf"
 " powerline symbols
+"
 let g:airline_left_sep = ''
 let g:airline_left_alt_sep = ''
 let g:airline_right_sep = ''
