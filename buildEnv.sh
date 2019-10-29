@@ -77,5 +77,5 @@ function install_vim()
 	vim -c PlugInstall
 }
 
-install_zsh
 install_vim
+install_zsh
