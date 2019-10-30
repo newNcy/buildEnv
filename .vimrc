@@ -9,16 +9,16 @@ set shiftwidth=4
 set autoindent
 set cindent
 set incsearch
-
 set t_Co=256
 set background=dark
 colorscheme molokai
+
 call plug#begin('~/.vim/plugs')
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'mhinz/vim-startify'
 Plug 'ryanoasis/vim-devicons'
-Plug 'Valloric/YouCompleteMe'
+Plug 'ycm-core/YouCompleteMe'
 Plug 'scrooloose/nerdtree'
 Plug 'vim-scripts/DoxygenToolkit.vim'
 call plug#end()
@@ -72,4 +72,5 @@ endfunc
 
 map <tab> :w<cr>:tabn<cr>
 nmap <space> :tabnew 
+map <F3> :NERDTreeToggle<cr>
 nmap <cr> :call Run()<cr>

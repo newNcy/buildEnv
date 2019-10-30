@@ -1,25 +1,26 @@
 #!/bin/bash
 
-cd 
 echo "install env..."
 
 
+execDir=`pwd`
+
 function install()
 {
-	sudo yum -y install $$
+	sudo yum -y install $*
 }
 #git
 
 function install_zsh()
 {
-	cd 
+	cd $execDir
 	install zsh
 	chsh $USER -s /bin/zsh
 	git clone https://github.com/robbyrussell/oh-my-zsh
 	cd oh-my-zsh
 	chmod +x tools/install.sh
 	./tools/install.sh
-	cd
+	cd $execDir
 }
 
 
@@ -27,7 +28,7 @@ function install_zsh()
 #vim
 function install_vim()
 {
-	cd 
+	cd $execDir
 	git clone https://github.com/vim/vim.git
 	cd ./vim
 	#gcc
@@ -55,12 +56,11 @@ function install_vim()
 
 	make VIMRUNTIMEDIR=/usr/local/share/vim/vim81
 	sudo make install
-	cd
+	cd $execDir
 
 	
 	#复制配置
-	git clone https://github.com/newNcy/buildEnv
-	cp buildEnv/.vimrc ~/
+	cp $execDir/.vimrc ~/
 	#ycm先装，因为装了插件会卡住
 	mkdir -p ~/.vim/plugs
 	cd ~/.vim/plugs
@@ -70,12 +70,13 @@ function install_vim()
 
 	#手动下载防止卡住
 	mkdir -p ~/.vim/plugs/YouCompleteMe/third_party/ycmd/third_party/clangd/cache/
-	cp ~/buildEnv/clangd-9.0.0-x86_64-unknown-linux-gnu.tar.bz2	~/.vim/plugs/YouCompleteMe/third_party/ycmd/third_party/clangd/cache/
+	cp $execDir/clangd-9.0.0-x86_64-unknown-linux-gnu.tar.bz2	~/.vim/plugs/YouCompleteMe/third_party/ycmd/third_party/clangd/cache/
 	install cmake
 	#这一步可能会卡住,下载clangd的时候
 	./install.py --clangd-completer
 
 	#install Plug
+	cd $execDir
 	git clone https://github.com/junegunn/vim-plug
 	mkdir ~/.vim/autoload
 	cp vim-plug/plug.vim ~/.vim/autoload/
@@ -85,7 +86,15 @@ function install_vim()
 	cp molokai/colors/molokai.vim ~/.vim/colors/
 	#安装剩下的插件
 	vim -c PlugInstall
+	cd $execDir
+}
+
+function clean()
+{
+	cd 
+	rm -Rf $execDir
 }
 
 install_vim
 install_zsh
+clean
