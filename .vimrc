@@ -9,8 +9,12 @@ set shiftwidth=4
 set autoindent
 set cindent
 set incsearch
+set hlsearch
 set t_Co=256
+set autoread
+set autowrite
 set background=dark
+set wildmenu
 colorscheme molokai
 
 call plug#begin('~/.vim/plugs')
@@ -22,6 +26,17 @@ Plug 'ycm-core/YouCompleteMe'
 Plug 'scrooloose/nerdtree'
 Plug 'vim-scripts/DoxygenToolkit.vim'
 call plug#end()
+
+
+
+
+let g:NERDTreeDirArrowExpandable='▷'
+let g:NERDTreeDirArrowCollapsible='▼'
+
+
+
+set t_Co=256
+let g:solarized_termcolors=256
 
 filetype on
 let g:airline_symbols = {}
@@ -60,9 +75,11 @@ let g:ycm_semantic_triggers =  {
 			\	}
 func! Run()
 	exec "w"
-	if &filetype == 'c'
+	if filereadable("Makefile")
+		exec "make"
+	elseif &filetype == 'c'
 		echo "run gcc..."
-		exec "!gcc -g % -o %<"
+		exec "!gcc -g % -o %< -std=c99"
 	elseif &filetype == 'cpp'
 		echo "run g++..."
 		exec "!g++ -g % -o %<"
@@ -70,7 +87,9 @@ func! Run()
 	exec "!./%<"
 endfunc
 
+
 map <tab> :w<cr>:tabn<cr>
 nmap <space> :tabnew 
 map <F3> :NERDTreeToggle<cr>
 nmap <cr> :call Run()<cr>
+map <F5> :
