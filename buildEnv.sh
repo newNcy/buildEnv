@@ -46,15 +46,15 @@ function install_vim()
 	./configure --with-features=huge \
 		--enable-multibyte \
 		--enable-rubyinterp=yes \
-		--enable-python3interp=yes \
+		--enable-pythoninterp=yes \
 		--with-python-config-dir=/lib64/python3.6/config-3.6m-x86_64-linux-gnu  \
 		--enable-perlinterp=yes \
 		--enable-luainterp=yes \
 		--enable-gui=gtk2 \
 		--enable-cscope \
-		--prefix=/usr/local
+		--prefix=user
 
-	make VIMRUNTIMEDIR=/usr/local/share/vim/vim81
+	make VIMRUNTIMEDIR=user/share/vim/vim81
 	sudo make install
 	cd $execDir
 
