@@ -15,7 +15,8 @@ set autoread
 set autowrite
 set background=dark
 set wildmenu
-colorscheme molokai
+let g:solarized_termcolors=256
+colorscheme solarized
 
 call plug#begin('~/.vim/plugs')
 Plug 'vim-airline/vim-airline'
@@ -25,22 +26,21 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'ycm-core/YouCompleteMe'
 Plug 'scrooloose/nerdtree'
 Plug 'vim-scripts/DoxygenToolkit.vim'
+Plug 'joshdick/onedark.vim'
 call plug#end()
 
 
 
+colorscheme onedark
 
 let g:NERDTreeDirArrowExpandable='▷'
 let g:NERDTreeDirArrowCollapsible='▼'
 
 
 
-set t_Co=256
-let g:solarized_termcolors=256
 
 filetype on
 let g:airline_symbols = {}
-let g:airline_theme = "badwolf"
 " powerline symbols
 "
 let g:airline_left_sep = ''
@@ -73,23 +73,148 @@ let g:ycm_semantic_triggers =  {
 			\	'c' : ['.', '->', 're![_A-Za-z0-9]'], 
 			\	'cpp' : ['.', '->','::', 're![_A-Za-z0-9]'] 
 			\	}
+
+let g:target = ""
 func! Run()
 	exec "w"
 	if filereadable("Makefile")
-		exec "make"
+		exec "!make"
 	elseif &filetype == 'c'
-		echo "run gcc..."
 		exec "!gcc -g % -o %< -std=c99"
+		let g:target = expand("%<")
 	elseif &filetype == 'cpp'
-		echo "run g++..."
 		exec "!g++ -g % -o %<"
+		let g:target = expand("%<")
+	else 
+		return
 	endif
-	exec "!./%<"
+	if g:target == ""
+		let g:target = input("target = ")
+	else 
+		if filereadable("./" . g:target)
+			exec "!./" . g:target
+		endif
+	endif
+endfunc
+
+func! GenImpl()
+	"检测是否为头文件
+	let path = expand("%")
+	let _ft = strpart(path, stridx(path,"/"))
+	let ft = strpart(_ft, stridx(_ft, ".") + 1)
+	if ft != 'h'
+		echo expand("%") . " is not header file"
+		return
+	endif
+
+	call cursor([1,1])
+	let flag = "Wz"
+	let class_name_regex = "\\(\\<class\\ *\\w*\\)\\zs\\<\\w*\\>"
+	let decl_regex = "\\S.*\(.*\).*\\(;\\)\\@="
+	let virt_decl_regex = ".*=.*"
+	let func_name_regex = "\\S\\+\\(\ *\(.*\)\\)\\@="
+
+	let c = search(class_name_regex, flag)
+	let old_pos = getcurpos()
+	let next_c = search(class_name_regex, flag)
+	call cursor(old_pos[1:])
+
+	if !c 
+		echo "no class found"
+		return
+	endif
+
+	let impls = []
+	while 1 
+		let decl = search(decl_regex, flag)
+		if !decl
+			break
+		elseif next_c && decl > next_c
+			let c = next_c
+			let old_pos = getcurpos()
+			let next_c = search(class_name_regex, flag)
+			call cursor(old_pos[1:])
+		endif
+		let sig = matchstr(getline(decl), decl_regex)
+		if match(sig, virt_decl_regex) != -1 
+			continue
+		endif
+		let class_name = matchstr(getline(c), class_name_regex) 
+
+		let func_name_start = match(sig, func_name_regex)
+		let func_name = matchstr(sig, func_name_regex)
+		
+		let spec = strcharpart(sig, 0, func_name_start)
+		let postfix = strcharpart(sig, func_name_start + strchars(func_name))
+		
+		let full_sig = spec . class_name . "::" . func_name . postfix 
+		call add(impls , full_sig)
+	endwhile
+	"写入cpp	
+	let impl_file_name = expand("%<") . ".cpp"
+	if filereadable(impl_file_name) 
+		echo impl_file_name . " exists"
+		return
+	endif
+	let header = expand("%")
+	exec "vs " . impl_file_name
+	let l = getcurpos()[1]
+	call setline(l, "#include \"". header . "\"")
+	let l += 1
+	call setline(l, "")
+	let l += 1
+	for sig in impls
+		call setline(l, sig)
+		let l += 1
+		call setline(l, "{}")
+		let l += 1
+		call setline(l, "")
+		let l += 1
+	endfor
 endfunc
 
 
-map <tab> :w<cr>:tabn<cr>
+func! OpenHOrCpp()
+	let path = expand("%")
+	let _ft = strpart(path, stridx(path,"/"))
+	let ft = strpart(_ft, stridx(_ft, ".") + 1)
+	let f = ""
+	if ft == "cpp" || ft == "cc" || ft == "c"
+		let f = expand("%<") . ".h"
+	elseif ft == "h"
+		if filereadable(expand("%<") . ".c")
+			let f = expand("%<") . ".c"
+		elseif filereadable(expand("%<") . ".cc")
+			let f = expand("%<") . ".cc"
+		elseif filereadable(expand("%<") . ".cpp")
+			let f = expand("%<") . ".cpp"
+		endif
+	else
+		echo expand("%") . "不是c/c++文件!"
+		return
+	endif
+
+	if f == "" || !filereadable(f)
+		echo f . " 不存在！"
+	else 
+		exec "vs " . f
+	endif
+endfunc
+
+"tab切换到下一个tab
+map <tab> :w<cr><c-w><c-w>
+
+"空格新建tab
 nmap <space> :tabnew 
+"f3打开文件目录树
 map <F3> :NERDTreeToggle<cr>
+
+nmap <F4> :let g:target = input("target = ")<cr>
+"回车运行
 nmap <cr> :call Run()<cr>
-map <F5> :
+
+
+map <F8> :call OpenHOrCpp()<cr>
+map <F7> :call GenImpl()<cr>
+nmap <s-h> gT
+nmap <s-l> gt

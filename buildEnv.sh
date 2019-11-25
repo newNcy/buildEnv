@@ -52,9 +52,9 @@ function install_vim()
 		--enable-luainterp=yes \
 		--enable-gui=gtk2 \
 		--enable-cscope \
-		--prefix=user
+		--prefix=/user/local
 
-	make VIMRUNTIMEDIR=user/share/vim/vim81
+	make VIMRUNTIMEDIR=/usr/local/share/vim/vim81
 	sudo make install
 	cd $execDir
 
