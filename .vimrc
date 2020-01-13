@@ -29,15 +29,8 @@ Plug 'vim-scripts/DoxygenToolkit.vim'
 Plug 'joshdick/onedark.vim'
 call plug#end()
 
-
-
-colorscheme onedark
-
 let g:NERDTreeDirArrowExpandable='▷'
 let g:NERDTreeDirArrowCollapsible='▼'
-
-
-
 
 filetype on
 let g:airline_symbols = {}
