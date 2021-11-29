@@ -7,6 +7,7 @@ set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set autoindent
+set expandtab
 set cindent
 set incsearch
 set hlsearch
@@ -16,18 +17,18 @@ set autowrite
 set background=dark
 set wildmenu
 let g:solarized_termcolors=256
-colorscheme solarized
+"colorscheme solarized
 
-call plug#begin('~/.vim/plugs')
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'mhinz/vim-startify'
-Plug 'ryanoasis/vim-devicons'
-Plug 'ycm-core/YouCompleteMe'
-Plug 'scrooloose/nerdtree'
-Plug 'vim-scripts/DoxygenToolkit.vim'
-Plug 'joshdick/onedark.vim'
-call plug#end()
+"call plug#begin('~/.vim/plugs')
+"Plug 'vim-airline/vim-airline'
+"Plug 'vim-airline/vim-airline-themes'
+"Plug 'mhinz/vim-startify'
+"Plug 'ryanoasis/vim-devicons'
+"Plug 'ycm-core/YouCompleteMe'
+"Plug 'scrooloose/nerdtree'
+"Plug 'vim-scripts/DoxygenToolkit.vim'
+"Plug 'joshdick/onedark.vim'
+"call plug#end()
 
 let g:NERDTreeDirArrowExpandable='▷'
 let g:NERDTreeDirArrowCollapsible='▼'
